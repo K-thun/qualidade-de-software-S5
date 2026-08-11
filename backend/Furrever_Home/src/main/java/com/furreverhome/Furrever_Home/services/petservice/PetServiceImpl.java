@@ -2,6 +2,7 @@ package com.furreverhome.Furrever_Home.services.petservice;
 
 import com.furreverhome.Furrever_Home.dto.GenericResponse;
 import com.furreverhome.Furrever_Home.dto.Pet.PetDto;
+import com.furreverhome.Furrever_Home.dto.Pet.PetMapper;
 import com.furreverhome.Furrever_Home.dto.Pet.PetVaccineDto;
 import com.furreverhome.Furrever_Home.entities.Pet;
 import com.furreverhome.Furrever_Home.entities.PetVaccination;
@@ -9,27 +10,32 @@ import com.furreverhome.Furrever_Home.entities.PetVaccinationInfo;
 import com.furreverhome.Furrever_Home.repository.PetRepository;
 import com.furreverhome.Furrever_Home.repository.PetVaccinationInfoRepository;
 import com.furreverhome.Furrever_Home.repository.PetVaccinationRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+/**
+ * Pet lookup and vaccination management.
+ * <p>
+ * {@code Pet -> PetDto} mapping used to be duplicated here (a private
+ * {@code mapPetToDto} that repeated every field already mapped by
+ * {@link PetMapper#toDto(Pet)}, just to additionally attach the vaccine
+ * name list). It now reuses {@link PetMapper#toDto(Pet, List)}.
+ */
 @Service
 @RequiredArgsConstructor
 public class PetServiceImpl implements PetService {
 
     private final PetRepository petRepository;
-    @Autowired
     private final PetVaccinationRepository petVaccinationRepository;
-
     private final PetVaccinationInfoRepository petVaccinationInfoRepository;
+    private final PetMapper petMapper;
 
 
     /**
@@ -43,7 +49,10 @@ public class PetServiceImpl implements PetService {
         Optional<Pet> optionalPet = petRepository.findById(petID);
         if (optionalPet.isPresent()) {
             Pet pet = optionalPet.get();
-            return mapPetToDto(pet);
+            List<String> vaccineNameList = petVaccinationRepository.findByPet(pet).stream()
+                    .map(PetVaccination::getVaccineName)
+                    .collect(Collectors.toList());
+            return petMapper.toDto(pet, vaccineNameList);
         } else {
             throw new RuntimeException("Pet not found.");
         }
@@ -95,7 +104,7 @@ public class PetServiceImpl implements PetService {
 
             petVaccinationInfo.setPetID(pet.getPetID());
            
-//            petVaccinationInfo.setPet(pet); // This correctly links the PetVaccinationInfo to the Pet.
+//            petVaccinationInfo.setPet(pet); // This correctly links the PetVaccinationInfo to the Pet.
             LocalDate nextVaccinationDate = nextVaccination.getDate().toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate();
@@ -103,34 +112,6 @@ public class PetServiceImpl implements PetService {
             petVaccinationInfo.setNextVaccinationDate(nextVaccinationDate);
             petVaccinationInfoRepository.save(petVaccinationInfo);
         }
-    }
-    //---------------------------UTILS----------------------------
-
-    /**
-     * Maps a Pet entity to a PetDto object.
-     *
-     * @param pet The Pet entity to map.
-     * @return A PetDto object containing the mapped information.
-     */
-    private PetDto mapPetToDto(Pet pet) {
-        PetDto petDto = new PetDto();
-        petDto.setPetID(pet.getPetID());
-        petDto.setType(pet.getType());
-        petDto.setBreed(pet.getBreed());
-        petDto.setColour(pet.getColour());
-        petDto.setGender(pet.getGender());
-        petDto.setBirthdate(pet.getBirthdate());
-        petDto.setPetImage(pet.getPetImage());
-        petDto.setPetMedicalHistory(pet.getPetMedicalHistory());
-        List<PetVaccination> petVaccinationList = petVaccinationRepository.findByPet(pet);
-        List<String> vaccineNameList = new ArrayList<>();
-        for (PetVaccination petVaccine : petVaccinationList) {
-            vaccineNameList.add(petVaccine.getVaccineName());
-        }
-        petDto.setVaccineNameList(vaccineNameList);
-        petDto.setShelter(pet.getShelter());
-        petDto.setAdopted(pet.isAdopted());
-        return petDto;
     }
 
 }

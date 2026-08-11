@@ -5,6 +5,8 @@ import com.furreverhome.Furrever_Home.entities.Pet;
 import com.furreverhome.Furrever_Home.entities.Shelter;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Maps between the {@link Pet} entity and its DTOs / requests.
  * Extracted from {@code ShelterServiceImpl}, which previously mixed this
@@ -71,6 +73,18 @@ public class PetMapper {
         petDto.setPetMedicalHistory(pet.getPetMedicalHistory());
         petDto.setShelter(pet.getShelter());
         petDto.setAdopted(pet.isAdopted());
+        return petDto;
+    }
+
+    /**
+     * Same as {@link #toDto(Pet)}, but also sets the vaccine name list.
+     * Extracted from {@code PetServiceImpl}, which had its own copy of the
+     * base field-by-field mapping (identical to {@link #toDto(Pet)}) just to
+     * additionally attach the pet's vaccine names.
+     */
+    public PetDto toDto(Pet pet, List<String> vaccineNameList) {
+        PetDto petDto = toDto(pet);
+        petDto.setVaccineNameList(vaccineNameList);
         return petDto;
     }
 }

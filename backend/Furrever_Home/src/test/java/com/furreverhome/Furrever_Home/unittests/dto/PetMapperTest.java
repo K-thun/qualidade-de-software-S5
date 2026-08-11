@@ -118,4 +118,19 @@ class PetMapperTest {
         assertEquals("Healthy", dto.getPetMedicalHistory());
         assertTrue(dto.isAdopted());
     }
+
+    @Test
+    void toDto_withVaccineList_setsVaccineNamesOnTopOfBaseMapping() {
+        Pet pet = new Pet();
+        pet.setPetID(11L);
+        pet.setType("Cat");
+
+        java.util.List<String> vaccines = java.util.List.of("Rabies", "FVRCP");
+
+        PetDto dto = petMapper.toDto(pet, vaccines);
+
+        assertEquals(11L, dto.getPetID());
+        assertEquals("Cat", dto.getType());
+        assertEquals(vaccines, dto.getVaccineNameList());
+    }
 }
