@@ -6,19 +6,38 @@ import {
 } from "@material-tailwind/react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { readLocalStorage } from '../../utils/helper';
 import { registerLostPet } from "../../service/api/lostPetService";
+import { useFormSubmit } from '../../hooks/useFormSubmit';
 
 const RegisterLostPet = ({ setChange }) => {
     const [open, setOpen] = React.useState(false);
-    const [response, setResponse] = useState({})
-    const [loading, setLoading] = useState(true)
     const handleOpen = () => setOpen((cur) => !cur);
     const navigate = useNavigate();
     const sid = readLocalStorage("shelterID");
 
-    // const [image, setPetImage] = useState("");
+    const resetFormData = () => setFormData({
+        type: "",
+        breed: "",
+        colour: "",
+        gender: "",
+        phone: "",
+        email: "",
+        petImage: ""
+    })
+
+    const { submit } = useFormSubmit(registerLostPet, {
+        successMessage: "New Pet added!",
+        onSuccess: () => {
+            setChange(true)
+            handleOpen();
+            resetFormData();
+        },
+        onError: () => {
+            handleOpen();
+            resetFormData();
+        },
+    });
 
     const [formData, setFormData] = useState({
         type: "",
@@ -62,44 +81,8 @@ const RegisterLostPet = ({ setChange }) => {
 
 
     const handleSubmit = (event) => {
-
         event.preventDefault();
-
-
-
-        registerLostPet(formData)
-            .then((res) => {
-                setChange(true)
-                setResponse(res)
-                setLoading(true)
-                toast.success("New Pet added!");
-                // navigate(0)
-                handleOpen();
-                setFormData({
-                    type: "",
-                    breed: "",
-                    colour: "",
-                    gender: "",
-                    phone: "",
-                    email: "",
-                    petImage: ""
-                })
-
-            })
-            .catch((err) => {
-                console.log(err)
-                toast.error(err.message)
-                handleOpen();
-                setFormData({
-                    type: "",
-                    breed: "",
-                    colour: "",
-                    gender: "",
-                    phone: "",
-                    email: "",
-                    petImage: ""
-                })
-            })
+        submit(formData);
     }
 
 

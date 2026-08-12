@@ -7,16 +7,23 @@ import {
 } from "@material-tailwind/react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { readLocalStorage } from '../../utils/helper';
 import { updateLostPet } from "../../service/api/lostPetService";
+import { useFormSubmit } from '../../hooks/useFormSubmit';
 
 const UpdatePetDetails = ({ pets,setChange }) => {
     const [open, setOpen] = React.useState(false);
-    const [response, setResponse] = useState({})
-    const [loading, setLoading] = useState(true)
     const handleOpen = () => setOpen((cur) => !cur);
     const navigate = useNavigate();
+
+    const { submit } = useFormSubmit(updateLostPet, {
+        successMessage: "Pet Updated!",
+        onSuccess: () => {
+            setChange(true)
+            handleOpen();
+        },
+        onError: () => handleOpen(),
+    });
 
     const [formData, setFormData] = useState({
 
@@ -59,45 +66,8 @@ const UpdatePetDetails = ({ pets,setChange }) => {
     // const token = readLocalStorage("token")
 
     const handleSubmit = (event) => {
-
         event.preventDefault();
-
-        updateLostPet(formData)
-            .then((res) => {
-
-                setResponse(res)
-                setLoading(true)
-                setChange(true)
-                toast.success("Pet Updated!");
-                // navigate(0)
-                handleOpen();
-                // setFormData({
-                //     type: "",
-                //     breed: "",
-                //     colour: "",
-                //     gender: "",
-                //     phone: "",
-                //     email: "",
-                //     petImage: "",
-                //     id: pets.id
-                // })
-
-            })
-            .catch((err) => {
-                console.log(err)
-                toast.error(err.message)
-                handleOpen();
-                // setFormData({
-                //     type: "",
-                //     breed: "",
-                //     colour: "",
-                //     gender: "",
-                //     phone: "",
-                //     email: "",
-                //     petImage: "",
-                //     id: pets.id
-                // })
-            })
+        submit(formData);
     }
 
 
