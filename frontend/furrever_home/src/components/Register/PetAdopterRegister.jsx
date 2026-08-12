@@ -4,15 +4,19 @@ import { toast } from "react-toastify";
 import { validatePassword } from '../../utils/helper';
 import Logo from '../Logo';
 import { signup } from '../../service/api/authService';
+import { useFormSubmit } from '../../hooks/useFormSubmit';
 
 const PetAdopterRegister = () => {
 
-  const [response, setResponse] = useState({})
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState({})
   const navigate = useNavigate();
   let errors = []
   const [isError, setIsError] = useState(false);
+
+  const { submit } = useFormSubmit(signup, {
+    successMessage: "Verify Your Email!",
+    successToastType: 'info',
+    onSuccess: () => navigate("/login"),
+  });
 
   const [formData, setFormData] = useState({
     email: "",
@@ -43,22 +47,7 @@ const PetAdopterRegister = () => {
     errors = validatePassword(formData.password)
 
     if (errors.length === 0) {
-
-      signup({
-        ...formData
-      })
-        .then((res) => {
-
-          setResponse(res)
-          setLoading(false)
-          toast.info("Verify Your Email!");
-          navigate("/login")
-        })
-        .catch((err) => {
-          console.log(err)
-          setError(err)
-          toast.error(err.message)
-        })
+      submit({ ...formData });
     }
     else {
       toast.error("Invalid Password")

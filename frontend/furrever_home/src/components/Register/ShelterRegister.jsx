@@ -4,16 +4,20 @@ import { toast } from "react-toastify";
 import { validatePassword } from '../../utils/helper';
 import Logo from '../Logo';
 import { signup } from '../../service/api/authService';
+import { useFormSubmit } from '../../hooks/useFormSubmit';
 
 const ShelterRegister = () => {
 
-
-  const [response, setResponse] = useState({})
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState({})
   const [isError, setIsError] = useState(false);
 
   const navigate = useNavigate();
+
+  const { submit } = useFormSubmit(signup, {
+    successMessage: "Your Shelter Verification is Pending!",
+    successToastType: 'info',
+    onSuccess: () => navigate("/login"),
+  });
+
   const [formData, setFormData] = useState({
     email: "",
     name: "",
@@ -96,20 +100,7 @@ const ShelterRegister = () => {
     errors = validatePassword(formData.password)
 
     if (errors.length === 0) {
-
-      signup(data)
-        .then((res) => {
-
-          setResponse(res)
-          setLoading(false)
-          toast.info("Your Shelter Verification is Pending!");
-          navigate("/login")
-        })
-        .catch((err) => {
-
-          setError(err)
-          toast.error(err.message)
-        })
+      submit(data);
     }
     else {
       toast.error("Invalid Password")
