@@ -1,6 +1,7 @@
 package com.furreverhome.Furrever_Home.unittests.services.petadopterservices;
 
 import com.furreverhome.Furrever_Home.dto.lostpet.LostPetDto;
+import com.furreverhome.Furrever_Home.dto.lostpet.LostPetMapper;
 import com.furreverhome.Furrever_Home.dto.lostpet.LostPetResponseDtoListDto;
 import com.furreverhome.Furrever_Home.dto.lostpet.RegisterLostPetDto;
 import com.furreverhome.Furrever_Home.dto.petadopter.SearchPetDto;
@@ -40,6 +41,9 @@ public class LostPetServiceImplTest {
 
     @Mock
     private JwtService jwtService;
+
+    @Mock
+    private LostPetMapper lostPetMapper;
 
     @InjectMocks
     private LostPetServiceImpl lostPetService;
@@ -130,6 +134,7 @@ public class LostPetServiceImplTest {
         LostPet lostPet1 = mock(LostPet.class);
         LostPet lostPet2 = mock(LostPet.class);
         when(lostPetRepository.findAll()).thenReturn(Arrays.asList(lostPet1, lostPet2));
+        when(lostPetMapper.toDto(any(LostPet.class))).thenReturn(new LostPetDto());
 
         // Act
         List<LostPetDto> result = lostPetService.getAllLostPets();
@@ -155,6 +160,7 @@ public class LostPetServiceImplTest {
         searchPetDto.setColor("black");
         List<LostPet> lostPetList = Arrays.asList(Mockito.mock(LostPet.class), Mockito.mock(LostPet.class));
         when(lostPetRepository.findAll(any(Example.class))).thenReturn(lostPetList);
+        when(lostPetMapper.toDto(any(LostPet.class))).thenReturn(new LostPetDto());
 
         // Act
         LostPetResponseDtoListDto result = lostPetService.searchLostPet(searchPetDto);
@@ -178,6 +184,7 @@ public class LostPetServiceImplTest {
         lostPet2.setUser(user);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(lostPetRepository.findByUser(user)).thenReturn(Arrays.asList(lostPet1, lostPet2));
+        when(lostPetMapper.toDto(any(LostPet.class))).thenReturn(new LostPetDto());
 
         // Act
         LostPetResponseDtoListDto result = lostPetService.getLostPetListByUser(1L);

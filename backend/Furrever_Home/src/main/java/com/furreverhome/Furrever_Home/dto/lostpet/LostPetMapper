@@ -1,0 +1,30 @@
+package com.furreverhome.Furrever_Home.dto.lostpet;
+
+import com.furreverhome.Furrever_Home.entities.LostPet;
+import org.springframework.stereotype.Component;
+
+/**
+ * Maps {@link LostPet} to {@link LostPetDto}.
+ * <p>
+ * This mapping used to live inside the {@code LostPet} entity itself
+ * ({@code LostPet.getLostPetDto()}), coupling the JPA entity to a specific
+ * API response shape — the same smell already fixed for {@code Shelter} and
+ * {@code Pet} via {@code ShelterMapper}/{@code PetMapper}.
+ */
+@Component
+public class LostPetMapper {
+
+    public LostPetDto toDto(LostPet lostPet) {
+        LostPetDto lostPetDto = new LostPetDto();
+        lostPetDto.setId(lostPet.getId());
+        lostPetDto.setType(lostPet.getType());
+        lostPetDto.setBreed(lostPet.getBreed());
+        lostPetDto.setColour(lostPet.getColour());
+        lostPetDto.setGender(lostPet.getGender());
+        lostPetDto.setEmail(lostPet.getEmail());
+        lostPetDto.setPhone(lostPet.getPhone());
+        lostPetDto.setPetImage(lostPet.getPetImage());
+        lostPetDto.setUserId(lostPet.getUser().getId());
+        return lostPetDto;
+    }
+}

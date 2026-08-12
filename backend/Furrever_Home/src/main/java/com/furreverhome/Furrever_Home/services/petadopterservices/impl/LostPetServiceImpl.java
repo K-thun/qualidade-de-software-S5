@@ -1,6 +1,7 @@
 package com.furreverhome.Furrever_Home.services.petadopterservices.impl;
 
 import com.furreverhome.Furrever_Home.dto.lostpet.LostPetDto;
+import com.furreverhome.Furrever_Home.dto.lostpet.LostPetMapper;
 import com.furreverhome.Furrever_Home.dto.lostpet.LostPetResponseDtoListDto;
 import com.furreverhome.Furrever_Home.dto.lostpet.RegisterLostPetDto;
 import com.furreverhome.Furrever_Home.dto.petadopter.SearchPetDto;
@@ -27,6 +28,7 @@ public class LostPetServiceImpl implements LostPetService {
     private final UserRepository userRepository;
     private final LostPetRepository lostPetRepository;
     private final JwtService jwtService;
+    private final LostPetMapper lostPetMapper;
     private final int authHeaderSubstring = 7;
 
     /**
@@ -64,7 +66,7 @@ public class LostPetServiceImpl implements LostPetService {
      */
     @Override
     public List<LostPetDto> getAllLostPets() {
-        return lostPetRepository.findAll().stream().map(LostPet::getLostPetDto).collect(Collectors.toList());
+        return lostPetRepository.findAll().stream().map(lostPetMapper::toDto).collect(Collectors.toList());
     }
 
     /**
@@ -92,7 +94,7 @@ public class LostPetServiceImpl implements LostPetService {
         Example<LostPet> petExample = Example.of(lostPet, exampleMatcher);
         List<LostPet> lostPetList = lostPetRepository.findAll(petExample);
         LostPetResponseDtoListDto lostPetResponseDtoListDto = new LostPetResponseDtoListDto();
-        lostPetResponseDtoListDto.setLostPetDtoList(lostPetList.stream().map(LostPet::getLostPetDto).collect(Collectors.toList()));
+        lostPetResponseDtoListDto.setLostPetDtoList(lostPetList.stream().map(lostPetMapper::toDto).collect(Collectors.toList()));
         return lostPetResponseDtoListDto;
     }
 
@@ -111,7 +113,7 @@ public class LostPetServiceImpl implements LostPetService {
             List<LostPet> lostPetList = lostPetRepository.findByUser(user);
             if (!lostPetList.isEmpty()) {
                 LostPetResponseDtoListDto lostPetResponseDtoListDto = new LostPetResponseDtoListDto();
-                lostPetResponseDtoListDto.setLostPetDtoList(lostPetList.stream().map(LostPet::getLostPetDto).collect(Collectors.toList()));
+                lostPetResponseDtoListDto.setLostPetDtoList(lostPetList.stream().map(lostPetMapper::toDto).collect(Collectors.toList()));
                 return lostPetResponseDtoListDto;
             } else  throw new RuntimeException("No lostpets found for this user");
         }else throw new UserNotFoundException("User not found");
