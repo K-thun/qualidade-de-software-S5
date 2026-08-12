@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Optional;
 
@@ -94,6 +96,23 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         } else {
             return new GenericResponse(null, "Not a valid user.");
         }
+    }
+
+    @Override
+    public String buildPasswordResetRedirectUrl(String token, String loginUrl, String updatePasswordUrl) {
+        String result = validatePasswordResetToken(token);
+
+        if (result == null) {
+            return updatePasswordUrl + "?token=" + token;
+        }
+
+        String message = switch (result) {
+            case "invalidToken" -> "Invalid token.";
+            case "expired" -> "Token has expired.";
+            default -> "Error.";
+        };
+        String encodedMessage = URLEncoder.encode(message, StandardCharsets.UTF_8);
+        return loginUrl + "?message=" + encodedMessage;
     }
 
     private void changeUserPassword(User user, String password) {

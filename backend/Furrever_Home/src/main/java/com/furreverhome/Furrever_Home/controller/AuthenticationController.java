@@ -16,8 +16,6 @@ import com.furreverhome.Furrever_Home.dto.user.ResetEmailRequest;
 import com.furreverhome.Furrever_Home.services.authenticationServices.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -102,25 +100,12 @@ public class AuthenticationController {
      */
     @GetMapping("/redirectChangePassword")
     public RedirectView showChangePasswordPage(@RequestParam("token") String token) {
-        String result = authenticationService.validatePasswordResetToken(token);
-        if(result != null) {
-            String message;
-            switch (result) {
-                case "invalidToken":
-                    message = "Invalid token.";
-                    break;
-                case "expired":
-                    message = "Token has expired.";
-                    break;
-                default:
-                    message = "Error.";
-            }
-
-          String encodedMessage = URLEncoder.encode(message, StandardCharsets.UTF_8);
-          return new RedirectView(frontendConfigurationProperties.getLoginUrl() + "?message="  + encodedMessage);
-        } else {
-            return new RedirectView(frontendConfigurationProperties.getUpdatePasswordUrl() + "?token=" + token);
-        }
+        String redirectUrl = authenticationService.buildPasswordResetRedirectUrl(
+                token,
+                frontendConfigurationProperties.getLoginUrl(),
+                frontendConfigurationProperties.getUpdatePasswordUrl()
+        );
+        return new RedirectView(redirectUrl);
     }
 
     /**

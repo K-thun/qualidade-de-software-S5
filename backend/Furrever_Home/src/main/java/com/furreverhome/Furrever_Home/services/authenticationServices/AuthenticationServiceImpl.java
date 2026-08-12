@@ -186,4 +186,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public GenericResponse updateUserPassword(PasswordDto passwordDto) {
         return passwordResetService.updateUserPassword(passwordDto);
     }
+
+    /**
+     * Resolves the "change password" link redirect. Delegates to {@link PasswordResetService}.
+     */
+    @Override
+    public String buildPasswordResetRedirectUrl(String token, String loginUrl, String updatePasswordUrl) {
+        return passwordResetService.buildPasswordResetRedirectUrl(token, loginUrl, updatePasswordUrl);
+    }
 }

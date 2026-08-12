@@ -18,4 +18,15 @@ public interface PasswordResetService {
     String validatePasswordResetToken(String token);
 
     GenericResponse updateUserPassword(PasswordDto passwordDto);
+
+    /**
+     * Resolves where the "change password" link in the reset e-mail should
+     * redirect to: the update-password page (valid token) or the login page
+     * with a human-readable error message (invalid/expired token).
+     * <p>
+     * Extracted from {@code AuthenticationController.showChangePasswordPage()},
+     * which mixed this message-mapping and URL-building logic into the
+     * controller layer.
+     */
+    String buildPasswordResetRedirectUrl(String token, String loginUrl, String updatePasswordUrl);
 }

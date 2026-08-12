@@ -20,4 +20,6 @@ public interface AuthenticationService {
     GenericResponse updateUserPassword(final PasswordDto passwordDto);
 
     boolean verifyByEmail(String email);
+
+    String buildPasswordResetRedirectUrl(String token, String loginUrl, String updatePasswordUrl);
 }

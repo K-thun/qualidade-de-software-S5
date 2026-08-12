@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.view.RedirectView;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 class AuthenticationControllerTest {
@@ -98,8 +100,8 @@ class AuthenticationControllerTest {
     public void testShowChangePasswordPage_InvalidToken() {
         // Given
         String token = "invalidToken";
-        when(authenticationService.validatePasswordResetToken(token)).thenReturn("invalidToken");
-        when(frontendConfigurationProperties.getLoginUrl()).thenReturn("http://example.com/login");
+        when(authenticationService.buildPasswordResetRedirectUrl(eq(token), anyString(), anyString()))
+                .thenReturn("http://example.com/login?message=Invalid+token.");
 
         // When
         RedirectView redirectView = authenticationController.showChangePasswordPage(token);
@@ -117,8 +119,8 @@ class AuthenticationControllerTest {
     public void testShowChangePasswordPage_ExpiredToken() {
         // Given
         String token = "expiredToken";
-        when(authenticationService.validatePasswordResetToken(token)).thenReturn("expired");
-        when(frontendConfigurationProperties.getLoginUrl()).thenReturn("http://example.com/login");
+        when(authenticationService.buildPasswordResetRedirectUrl(eq(token), anyString(), anyString()))
+                .thenReturn("http://example.com/login?message=Token+has+expired.");
 
         // When
         RedirectView redirectView = authenticationController.showChangePasswordPage(token);
@@ -136,8 +138,8 @@ class AuthenticationControllerTest {
     public void testShowChangePasswordPage_ValidToken() {
         // Given
         String token = "validToken";
-        when(authenticationService.validatePasswordResetToken(token)).thenReturn(null);
-        when(frontendConfigurationProperties.getUpdatePasswordUrl()).thenReturn("http://example.com/updatePassword");
+        when(authenticationService.buildPasswordResetRedirectUrl(eq(token), anyString(), anyString()))
+                .thenReturn("http://example.com/updatePassword?token=validToken");
 
         // When
         RedirectView redirectView = authenticationController.showChangePasswordPage(token);
