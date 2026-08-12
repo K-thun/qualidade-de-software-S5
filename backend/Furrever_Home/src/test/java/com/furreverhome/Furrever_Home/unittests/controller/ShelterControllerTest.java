@@ -8,7 +8,7 @@ import com.furreverhome.Furrever_Home.dto.Pet.PetDto;
 import com.furreverhome.Furrever_Home.dto.Pet.PetVaccineDto;
 import com.furreverhome.Furrever_Home.dto.shelter.RegisterPetRequest;
 import com.furreverhome.Furrever_Home.services.petservice.PetService;
-import com.furreverhome.Furrever_Home.services.shelterService.ShelterServiceImpl;
+import com.furreverhome.Furrever_Home.services.shelterService.ShelterService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -36,7 +36,7 @@ public class ShelterControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private ShelterServiceImpl shelterService;
+    private ShelterService shelterService;
 
     @Mock
     private PetService petService;

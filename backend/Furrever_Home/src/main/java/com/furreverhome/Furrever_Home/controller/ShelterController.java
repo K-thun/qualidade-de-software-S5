@@ -7,7 +7,7 @@ import com.furreverhome.Furrever_Home.dto.Pet.PetVaccineDto;
 import com.furreverhome.Furrever_Home.dto.petadopter.ShelterResponseDto;
 import com.furreverhome.Furrever_Home.dto.shelter.RegisterPetRequest;
 import com.furreverhome.Furrever_Home.services.petservice.PetService;
-import com.furreverhome.Furrever_Home.services.shelterService.ShelterServiceImpl;
+import com.furreverhome.Furrever_Home.services.shelterService.ShelterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ShelterController {
 
-    private final ShelterServiceImpl shelterService;
+    private final ShelterService shelterService;
     private final PetService petService;
 
     /**
