@@ -1,6 +1,7 @@
 package com.furreverhome.Furrever_Home.unittests.services.petadopterservices;
 
 import com.furreverhome.Furrever_Home.dto.petadopter.PetAdopterDto;
+import com.furreverhome.Furrever_Home.dto.Pet.PetMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,12 @@ public class PetAdopterServiceImplTest {
 
     @Mock
     private PetRepository petRepository;
+
+    @Mock
+    private ShelterMapper shelterMapper;
+
+    @Mock
+    private PetMapper petMapper;
 
     @InjectMocks
     private PetAdopterServiceImpl petAdopterService;
@@ -90,6 +97,7 @@ public class PetAdopterServiceImplTest {
         // Mock the shelter list
         List<Shelter> shelters = Arrays.asList(shelter, shelter);
         when(shelterRepository.findAll()).thenReturn(shelters);
+        when(shelterMapper.toResponseDto(any(Shelter.class))).thenReturn(new ShelterResponseDto());
 
         // Act
         List<ShelterResponseDto> result = petAdopterService.getAllShelter();
@@ -168,6 +176,7 @@ public class PetAdopterServiceImplTest {
         searchShelterDto.setCapacity(100L);
         List<Shelter> shelters = Arrays.asList(shelter, shelter);
         when(shelterRepository.findAll(any(Example.class))).thenReturn(shelters);
+        when(shelterMapper.toResponseDto(any(Shelter.class))).thenReturn(new ShelterResponseDto());
 
         // Act
         ShelterResponseDtoListDto result = petAdopterService.searchShelter(searchShelterDto);
@@ -194,6 +203,7 @@ public class PetAdopterServiceImplTest {
         searchPetDto.setColor("black");
         List<Pet> petList = Arrays.asList(pet, pet);
         when(petRepository.findAll(any(Example.class))).thenReturn(petList);
+        when(petMapper.toResponseDto(any(Pet.class))).thenReturn(new PetResponseDto());
 
         // Act
         PetResponseDtoListDto result = petAdopterService.searchPet(searchPetDto);

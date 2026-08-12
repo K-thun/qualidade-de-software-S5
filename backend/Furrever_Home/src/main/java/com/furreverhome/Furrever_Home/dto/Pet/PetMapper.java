@@ -1,5 +1,6 @@
 package com.furreverhome.Furrever_Home.dto.Pet;
 
+import com.furreverhome.Furrever_Home.dto.petadopter.PetResponseDto;
 import com.furreverhome.Furrever_Home.dto.shelter.RegisterPetRequest;
 import com.furreverhome.Furrever_Home.entities.Pet;
 import com.furreverhome.Furrever_Home.entities.Shelter;
@@ -86,5 +87,29 @@ public class PetMapper {
         PetDto petDto = toDto(pet);
         petDto.setVaccineNameList(vaccineNameList);
         return petDto;
+    }
+
+    /**
+     * Maps to the adopter-facing {@link PetResponseDto} (shelter name/city/contact
+     * flattened in, unlike {@link #toDto(Pet)} which keeps the full {@code Shelter}).
+     * Extracted from {@code Pet.getPetResponseDto()}, which coupled the JPA
+     * entity to this specific API response shape.
+     */
+    public PetResponseDto toResponseDto(Pet pet) {
+        PetResponseDto petResponseDto = new PetResponseDto();
+
+        petResponseDto.setPetId(pet.getPetID());
+        petResponseDto.setAge(pet.getAge());
+        petResponseDto.setBreed(pet.getBreed());
+        petResponseDto.setType(pet.getType());
+        petResponseDto.setPetImage(pet.getPetImage());
+        petResponseDto.setShelterName(pet.getShelter().getName());
+        petResponseDto.setShelterCity(pet.getShelter().getCity());
+        petResponseDto.setShelterContact(pet.getShelter().getContact());
+        petResponseDto.setColor(pet.getColour());
+        petResponseDto.setGender(pet.getGender());
+        petResponseDto.setAdopted(pet.isAdopted());
+
+        return petResponseDto;
     }
 }

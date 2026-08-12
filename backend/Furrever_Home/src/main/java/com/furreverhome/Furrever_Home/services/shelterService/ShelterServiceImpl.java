@@ -4,6 +4,7 @@ import com.furreverhome.Furrever_Home.dto.GenericResponse;
 import com.furreverhome.Furrever_Home.dto.Pet.PetAdoptionRequestResponseDto;
 import com.furreverhome.Furrever_Home.dto.Pet.PetDto;
 import com.furreverhome.Furrever_Home.dto.Pet.PetMapper;
+import com.furreverhome.Furrever_Home.dto.petadopter.ShelterMapper;
 import com.furreverhome.Furrever_Home.dto.petadopter.ShelterResponseDto;
 import com.furreverhome.Furrever_Home.dto.shelter.RegisterPetRequest;
 import com.furreverhome.Furrever_Home.entities.Pet;
@@ -41,6 +42,7 @@ public class ShelterServiceImpl implements ShelterService {
     private final AdopterPetRequestsRepository adopterPetRequestsRepository;
     private final UserRepository userRepository;
     private final PetMapper petMapper;
+    private final ShelterMapper shelterMapper;
 
     /**
      * Registers a new pet with the provided details.
@@ -173,7 +175,7 @@ public class ShelterServiceImpl implements ShelterService {
 
             if (optionalShelter.isPresent()) {
                 Shelter shelter = optionalShelter.get();
-                return shelter.getShelterResponseDto();
+                return shelterMapper.toResponseDto(shelter);
             } else {
                 throw new UserNotFoundException("Shelter Not Found");
             }

@@ -1,6 +1,5 @@
 package com.furreverhome.Furrever_Home.entities;
 
-import com.furreverhome.Furrever_Home.dto.petadopter.PetResponseDto;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -34,23 +33,4 @@ public class Pet {
     private Shelter shelter;
 
     private boolean adopted;
-
-    public PetResponseDto getPetResponseDto() {
-        PetResponseDto petResponseDto = new PetResponseDto();
-
-        petResponseDto.setPetId(petID);
-        petResponseDto.setAge(age);
-        petResponseDto.setBreed(breed);
-        petResponseDto.setType(type);
-        petResponseDto.setPetImage(petImage);
-        petResponseDto.setShelterName(shelter.getName());
-        petResponseDto.setShelterCity(shelter.getCity());
-        petResponseDto.setShelterContact(shelter.getContact());
-//        petResponseDto.setShelter(shelter);
-        petResponseDto.setColor(colour);
-        petResponseDto.setGender(gender);
-        petResponseDto.setAdopted(adopted);
-
-        return petResponseDto;
-    }
 }

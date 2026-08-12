@@ -2,6 +2,7 @@ package com.furreverhome.Furrever_Home.services.petadopterservices.impl;
 
 import com.furreverhome.Furrever_Home.dto.GenericResponse;
 import com.furreverhome.Furrever_Home.dto.Pet.PetAdoptionRequestDto;
+import com.furreverhome.Furrever_Home.dto.Pet.PetMapper;
 import com.furreverhome.Furrever_Home.dto.petadopter.PetAdopterDto;
 import com.furreverhome.Furrever_Home.dto.petadopter.*;
 import com.furreverhome.Furrever_Home.entities.*;
@@ -29,6 +30,10 @@ public class PetAdopterServiceImpl implements PetAdopterService {
 
     private final PetRepository petRepository;
 
+    private final ShelterMapper shelterMapper;
+
+    private final PetMapper petMapper;
+
     private final AdopterPetRequestsRepository adopterPetRequestsRepository;
 
     /**
@@ -38,7 +43,7 @@ public class PetAdopterServiceImpl implements PetAdopterService {
      */
     @Override
     public List<ShelterResponseDto> getAllShelter() {
-        return shelterRepository.findAll().stream().map(Shelter::getShelterResponseDto).collect(Collectors.toList());
+        return shelterRepository.findAll().stream().map(shelterMapper::toResponseDto).collect(Collectors.toList());
     }
 
     /**
@@ -91,7 +96,7 @@ public class PetAdopterServiceImpl implements PetAdopterService {
         Example<Shelter> shelterExample = Example.of(shelter, exampleMatcher);
         List<Shelter> shelterList = shelterRepository.findAll(shelterExample);
        ShelterResponseDtoListDto shelterResponseDtoListDto = new ShelterResponseDtoListDto();
-       shelterResponseDtoListDto.setShelterResponseDtoList(shelterList.stream().map(Shelter::getShelterResponseDto).collect(Collectors.toList()));
+       shelterResponseDtoListDto.setShelterResponseDtoList(shelterList.stream().map(shelterMapper::toResponseDto).collect(Collectors.toList()));
        return shelterResponseDtoListDto;
     }
 
@@ -121,7 +126,7 @@ public class PetAdopterServiceImpl implements PetAdopterService {
         Example<Pet> petExample = Example.of(pet, exampleMatcher);
         List<Pet> petList = petRepository.findAll(petExample);
         PetResponseDtoListDto petResponseDtoListDto = new PetResponseDtoListDto();
-        petResponseDtoListDto.setPetResponseDtoList(petList.stream().map(Pet::getPetResponseDto).collect(Collectors.toList()));
+        petResponseDtoListDto.setPetResponseDtoList(petList.stream().map(petMapper::toResponseDto).collect(Collectors.toList()));
         return petResponseDtoListDto;
     }
 

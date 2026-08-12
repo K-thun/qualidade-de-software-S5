@@ -1,6 +1,5 @@
 package com.furreverhome.Furrever_Home.entities;
 
-import com.furreverhome.Furrever_Home.dto.petadopter.ShelterResponseDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -47,24 +46,4 @@ public class Shelter {
     private boolean accepted;
 
     private boolean rejected;
-
-    public ShelterResponseDto getShelterResponseDto() {
-        ShelterResponseDto shelterResponseDto = new ShelterResponseDto();
-        shelterResponseDto.setId(id);
-        shelterResponseDto.setName(name);
-        shelterResponseDto.setCapacity(capacity);
-        shelterResponseDto.setAddress(address);
-        shelterResponseDto.setCity(city);
-        shelterResponseDto.setCountry(country);
-        shelterResponseDto.setZipcode(zipcode);
-        shelterResponseDto.setContact(contact);
-        shelterResponseDto.setImage(imageBase64);
-        shelterResponseDto.setLicense(license);
-        shelterResponseDto.setEmail(user.getEmail());
-        shelterResponseDto.setUser(user);
-        shelterResponseDto.setVerified(user.getVerified());
-        shelterResponseDto.setAccepted(accepted);
-        shelterResponseDto.setRejected(rejected);
-        return shelterResponseDto;
-    }
 }
