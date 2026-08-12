@@ -10,6 +10,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,16 @@ public class JwtServiceImpl implements JwtService {
 
     private final UserRepository userRepository;
     private final int tokenPeriod = 1000 * 60 * 60 * 2;
+
+    /**
+     * HMAC signing key, resolved from the JWT_SECRET_KEY environment
+     * variable via the {@code jwt.secret} property. This used to be a
+     * literal string in this file — anyone with read access to the source
+     * (e.g. a public repo) could forge a valid token for any user, admin
+     * included. Never hardcode this value again.
+     */
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     /**
      * Refreshes the JWT token.
@@ -103,7 +114,7 @@ public class JwtServiceImpl implements JwtService {
      * @return The signing key.
      */
     private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode("e2315034876692352de9a59ef03e9f39582606f2a1acf1f1a792e9d85a77eb90");
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

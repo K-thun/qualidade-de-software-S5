@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -34,10 +35,17 @@ public class JwtServiceImplTest {
 
     /**
      * Sets up the mock objects and initializes test data before each test method.
+     * {@code secretKey} is set manually because this is a plain Mockito test
+     * (no Spring context), so the real {@code @Value("${jwt.secret}")}
+     * injection never runs — the field would otherwise be null and
+     * {@code getSigningKey()} would throw.
      */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        ReflectionTestUtils.setField(jwtService, "secretKey",
+                "e2315034876692352de9a59ef03e9f39582606f2a1acf1f1a792e9d85a77eb90");
+
         testUser = new User();
         testUser.setEmail(userName);
 
