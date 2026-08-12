@@ -2,7 +2,6 @@ package com.furreverhome.Furrever_Home.controller;
 
 import com.furreverhome.Furrever_Home.dto.chat.ChatCredentialsResponse;
 import com.furreverhome.Furrever_Home.repository.ChatService;
-import com.furreverhome.Furrever_Home.services.chat.ChatServiceImpl;
 import io.getstream.chat.java.exceptions.StreamException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
