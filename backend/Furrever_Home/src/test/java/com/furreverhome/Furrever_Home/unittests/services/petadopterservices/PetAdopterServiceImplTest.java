@@ -44,6 +44,9 @@ public class PetAdopterServiceImplTest {
     @Mock
     private PetMapper petMapper;
 
+    @Mock
+    private PetAdopterMapper petAdopterMapper;
+
     @InjectMocks
     private PetAdopterServiceImpl petAdopterService;
 
@@ -120,6 +123,7 @@ public class PetAdopterServiceImplTest {
         petAdopter.setUser(user);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(petAdopterRepository.findByUser(user)).thenReturn(Optional.of(petAdopter));
+        when(petAdopterMapper.toDto(petAdopter)).thenReturn(new PetAdopterDto());
 
         // Act
         PetAdopterDto result = petAdopterService.getPetAdopterDetailsById(1L);

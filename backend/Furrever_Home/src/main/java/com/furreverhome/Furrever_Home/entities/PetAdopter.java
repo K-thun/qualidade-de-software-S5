@@ -1,7 +1,5 @@
 package com.furreverhome.Furrever_Home.entities;
 
-import com.furreverhome.Furrever_Home.dto.petadopter.PetAdopterDto;
-import com.furreverhome.Furrever_Home.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -31,19 +29,5 @@ public class PetAdopter {
     private String country;
 
     private String zipcode;
-
-    public PetAdopterDto getPetAdopterDto() {
-        PetAdopterDto petAdopterDto = new PetAdopterDto();
-        petAdopterDto.setId(id);
-        petAdopterDto.setFirstname(firstname);
-        petAdopterDto.setLastname(lastname);
-        petAdopterDto.setUserRole(Role.PETADOPTER);
-        petAdopterDto.setEmail(getUser().getEmail());
-        petAdopterDto.setAddress(address);
-        petAdopterDto.setCity(city);
-        petAdopterDto.setZipcode(zipcode);
-
-        return petAdopterDto;
-    }
 
 }

@@ -34,6 +34,8 @@ public class PetAdopterServiceImpl implements PetAdopterService {
 
     private final PetMapper petMapper;
 
+    private final PetAdopterMapper petAdopterMapper;
+
     private final AdopterPetRequestsRepository adopterPetRequestsRepository;
 
     /**
@@ -63,7 +65,7 @@ public class PetAdopterServiceImpl implements PetAdopterService {
 
             if(optionalPetAdopter.isPresent()) {
                 PetAdopter petAdopter = optionalPetAdopter.get();
-                return petAdopter.getPetAdopterDto();
+                return petAdopterMapper.toDto(petAdopter);
             } else {
                 throw new UserNotFoundException("Pet Adopter Not Found");
             }
