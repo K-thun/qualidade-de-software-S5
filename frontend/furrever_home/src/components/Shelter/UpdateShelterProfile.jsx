@@ -6,18 +6,42 @@ import {
 } from "@material-tailwind/react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { deleteLocalStorage, readLocalStorage, saveLocalStorage } from '../../utils/helper';
 import { updateShelterProfile } from '../../service/api/shelterService';
+import { useFormSubmit } from '../../hooks/useFormSubmit';
 
 const UpdateShelterProfile = ({ shelter }) => {
     const [open, setOpen] = React.useState(false);
-    const [response, setResponse] = useState({})
-    const [loading, setLoading] = useState(true)
     const handleOpen = () => setOpen((cur) => !cur);
     const navigate = useNavigate();
     const id = readLocalStorage("shelterID");
+    const userId = readLocalStorage("id")
 
+    const resetFormData = () => setFormData({
+        name: "",
+        address: "",
+        capacity: "",
+        city: "",
+        country: "",
+        zipcode: "",
+        contact: "",
+        shelter: id
+    })
+
+    const { submit } = useFormSubmit((data) => updateShelterProfile(userId, data), {
+        successMessage: "Successfully Updated Shelter info",
+        onSuccess: (res) => {
+            deleteLocalStorage("User")
+            saveLocalStorage("User", JSON.stringify(res.data))
+            navigate(0)
+            handleOpen();
+            resetFormData();
+        },
+        onError: () => {
+            handleOpen();
+            resetFormData();
+        },
+    });
 
     const [formData, setFormData] = useState({
         name: shelter.name,
@@ -57,44 +81,8 @@ const UpdateShelterProfile = ({ shelter }) => {
     }
 
     const handleSubmit = (event) => {
-
         event.preventDefault();
-        const userId = readLocalStorage("id")
-
-        updateShelterProfile(userId, formData)
-            .then((res) => {
-                setLoading(true)
-                deleteLocalStorage("User")
-                saveLocalStorage("User", JSON.stringify(res.data))
-                toast.success("Successfully Updated Shelter info");
-                navigate(0)
-                handleOpen();
-                setFormData({
-                    name: "",
-                    address: "",
-                    capacity: "",
-                    city: "",
-                    country: "",
-                    zipcode: "",
-                    contact: "",
-                    shelter: id
-                })
-            })
-            .catch((err) => {
-                console.log(err)
-                toast.error(err.message)
-                handleOpen();
-                setFormData({
-                    name: "",
-                    address: "",
-                    capacity: "",
-                    city: "",
-                    country: "",
-                    zipcode: "",
-                    contact: "",
-                    shelter: id
-                })
-            })
+        submit(formData);
     }
 
 

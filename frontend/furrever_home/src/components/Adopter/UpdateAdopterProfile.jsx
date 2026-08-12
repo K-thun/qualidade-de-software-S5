@@ -6,16 +6,26 @@ import {
 } from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { deleteLocalStorage, readLocalStorage, saveLocalStorage } from '../../utils/helper';
 import { updateAdopterProfile } from '../../service/api/userService';
+import { useFormSubmit } from '../../hooks/useFormSubmit';
 
 const UpdateAdopterProfile = ({ user }) => {
     const [open, setOpen] = useState(false);
-    const [response, setResponse] = useState({})
-    const [loading, setLoading] = useState(true)
     const handleOpen = () => setOpen((cur) => !cur);
     const navigate = useNavigate();
+    const userId = readLocalStorage("id")
+
+    const { submit } = useFormSubmit((data) => updateAdopterProfile(userId, data), {
+        successMessage: "Successfully Updated User info",
+        onSuccess: (res) => {
+            deleteLocalStorage("User")
+            saveLocalStorage("User", JSON.stringify(res.data))
+            navigate(0)
+            handleOpen();
+        },
+        onError: () => handleOpen(),
+    });
 
     useEffect(() => {
         setFormData({
@@ -54,28 +64,8 @@ const UpdateAdopterProfile = ({ user }) => {
     }
 
     const handleSubmit = (event) => {
-
         event.preventDefault();
-        const userId = readLocalStorage("id")
-
-        updateAdopterProfile(userId, formData)
-            .then((res) => {
-
-                setLoading(true)
-                deleteLocalStorage("User")
-                saveLocalStorage("User", JSON.stringify(res.data))
-                toast.success("Successfully Updated User info");
-                // navigate("/adopter/home")
-                navigate(0)
-                handleOpen();
-
-            })
-            .catch((err) => {
-                console.log(err)
-                toast.error(err.message)
-                handleOpen();
-
-            })
+        submit(formData);
     }
 
 

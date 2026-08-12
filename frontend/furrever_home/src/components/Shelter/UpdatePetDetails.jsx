@@ -7,15 +7,23 @@ import {
 } from "@material-tailwind/react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { editPet } from '../../service/api/shelterService';
+import { useFormSubmit } from '../../hooks/useFormSubmit';
 
 const UpdatePetDetails = ({ pets, sid,setChange }) => {
     const [open, setOpen] = React.useState(false);
-    const [response, setResponse] = useState({})
-    const [loading, setLoading] = useState(true)
     const handleOpen = () => setOpen((cur) => !cur);
     const navigate = useNavigate();
+
+    const { submit } = useFormSubmit((data) => editPet(pets.petID, data), {
+        successMessage: "Pet Updated!",
+        onSuccess: () => {
+            navigate(0)
+            setChange(true)
+            handleOpen();
+        },
+        onError: () => handleOpen(),
+    });
 
     const [formData, setFormData] = useState({
 
@@ -55,46 +63,9 @@ const UpdatePetDetails = ({ pets, sid,setChange }) => {
         };
     }
 
-    // const token = readLocalStorage("token")
-
     const handleSubmit = (event) => {
-
         event.preventDefault();
-
-        editPet(pets.petID, formData)
-            .then((res) => {
-
-                setResponse(res)
-                setLoading(true)
-                toast.success("Pet Updated!");
-                navigate(0)
-                setChange(true)
-                handleOpen();
-                // setFormData({
-                //     type: "",
-                //     breed: "",
-                //     colour: "",
-                //     gender: "",
-                //     birthdate: "",
-                //     petImage: "",
-                //     adopted: false
-                // })
-
-            })
-            .catch((err) => {
-                console.log(err)
-                toast.error(err.message)
-                handleOpen();
-                // setFormData({
-                //     type: "",
-                //     breed: "",
-                //     colour: "",
-                //     gender: "",
-                //     birthdate: "",
-                //     petImage: "",
-                //     adopted: false
-                // })
-            })
+        submit(formData);
     }
 
 

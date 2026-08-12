@@ -6,19 +6,39 @@ import {
 } from "@material-tailwind/react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { readLocalStorage } from '../../utils/helper';
 import { registerPet } from '../../service/api/shelterService';
+import { useFormSubmit } from '../../hooks/useFormSubmit';
 
 const RegisterPet = ({setChange}) => {
     const [open, setOpen] = React.useState(false);
-    const [response, setResponse] = useState({})
-    const [loading, setLoading] = useState(true)
     const handleOpen = () => setOpen((cur) => !cur);
     const navigate = useNavigate();
     const sid = readLocalStorage("shelterID");
 
     const [image, setPetImage] = useState("");
+
+    const resetFormData = () => setFormData({
+        type: "",
+        breed: "",
+        colour: "",
+        gender: "",
+        birthdate: "",
+        petImage: ""
+    })
+
+    const { submit } = useFormSubmit(registerPet, {
+        successMessage: "New Pet added!",
+        onSuccess: () => {
+            setChange(true)
+            handleOpen();
+            resetFormData();
+        },
+        onError: () => {
+            handleOpen();
+            resetFormData();
+        },
+    });
 
     const [formData, setFormData] = useState({
         type: "",
@@ -69,38 +89,7 @@ const RegisterPet = ({setChange}) => {
             petImage: image
         }
 
-
-        registerPet(data)
-            .then((res) => {
-
-                setResponse(res)
-                setLoading(true)
-                toast.success("New Pet added!");
-                // navigate(0)
-                setChange(true)
-                handleOpen();
-                setFormData({
-                    type: "",
-                    breed: "",
-                    colour: "",
-                    gender: "",
-                    birthdate: "",
-                    petImage: ""
-                })
-
-            })
-            .catch((err) => {
-                toast.error(err.message)
-                handleOpen();
-                setFormData({
-                    type: "",
-                    breed: "",
-                    colour: "",
-                    gender: "",
-                    birthdate: "",
-                    petImage: ""
-                })
-            })
+        submit(data);
     }
 
 
